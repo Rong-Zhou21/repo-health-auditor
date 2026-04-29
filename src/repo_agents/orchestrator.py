@@ -49,9 +49,9 @@ class AuditOrchestrator:
 
     def run(self) -> list[AgentResult]:
         if not self.context.root.exists():
-            raise FileNotFoundError(f"Path does not exist: {self.context.root}")
+            raise FileNotFoundError(f"路径不存在：{self.context.root}")
         if not self.context.root.is_dir():
-            raise NotADirectoryError(f"Path is not a directory: {self.context.root}")
+            raise NotADirectoryError(f"路径不是目录：{self.context.root}")
 
         for agent in self.agents:
             result = agent.run(self.context)
@@ -76,4 +76,3 @@ class AuditOrchestrator:
             ],
         }
         return json.dumps(payload, ensure_ascii=False, indent=2)
-

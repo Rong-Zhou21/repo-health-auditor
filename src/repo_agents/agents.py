@@ -123,7 +123,7 @@ class FileScoutAgent(BaseAgent):
         for file_path in files:
             rel = file_path.relative_to(context.root).as_posix()
             suffix = file_path.suffix.lower()
-            language_counter[LANGUAGE_BY_SUFFIX.get(suffix, "Other")] += 1
+            language_counter[LANGUAGE_BY_SUFFIX.get(suffix, "其他")] += 1
             try:
                 size = file_path.stat().st_size
             except OSError:
@@ -140,8 +140,8 @@ class FileScoutAgent(BaseAgent):
             findings.append(
                 Finding(
                     severity="MEDIUM",
-                    title="Missing README",
-                    detail="Repository lacks README.md, which makes onboarding and agent handoff harder.",
+                    title="缺少 README",
+                    detail="仓库缺少 README.md，会增加新人接手和智能体交接的成本。",
                     agent=self.name,
                 )
             )
@@ -150,23 +150,23 @@ class FileScoutAgent(BaseAgent):
             findings.append(
                 Finding(
                     severity="LOW",
-                    title="Empty file",
-                    detail="Empty files often indicate unfinished work or stale placeholders.",
+                    title="空文件",
+                    detail="空文件通常意味着未完成的工作或已经过期的占位文件。",
                     path=rel,
                     agent=self.name,
                 )
             )
 
         observations = [
-            f"Scanned {len(files)} files under {display_path(context.root)}.",
-            "Top languages: "
+            f"已扫描 {display_path(context.root)} 下的 {len(files)} 个文件。",
+            "主要语言和配置类型："
             + ", ".join(f"{name}={count}" for name, count in language_counter.most_common(5)),
-            f"Detected {len(key_files)} key project/config files.",
+            f"识别到 {len(key_files)} 个关键项目或配置文件。",
         ]
 
         return AgentResult(
             agent=self.name,
-            summary=f"Mapped {len(files)} files and {len(language_counter)} language/config categories.",
+            summary=f"已映射 {len(files)} 个文件和 {len(language_counter)} 类语言或配置。",
             observations=observations,
             findings=findings,
             data={
@@ -198,8 +198,8 @@ class RiskAnalystAgent(BaseAgent):
                 findings.append(
                     Finding(
                         severity="MEDIUM",
-                        title="Large file skipped",
-                        detail=f"File is {size} bytes, which may slow reviews and agent context loading.",
+                        title="跳过超大文件",
+                        detail=f"文件大小为 {size} 字节，可能拖慢代码审查和智能体上下文加载。",
                         path=rel,
                         agent=self.name,
                     )
@@ -217,7 +217,7 @@ class RiskAnalystAgent(BaseAgent):
                         findings.append(
                             Finding(
                                 severity="LOW",
-                                title="Deferred work marker",
+                                title="遗留待办标记",
                                 detail=line.strip()[:180],
                                 path=rel,
                                 line=line_no,
@@ -230,8 +230,8 @@ class RiskAnalystAgent(BaseAgent):
                         findings.append(
                             Finding(
                                 severity="HIGH",
-                                title="Possible secret in source",
-                                detail="A line matches a common secret/token pattern. Rotate it if real and move it to environment-backed config.",
+                                title="源码中可能存在密钥",
+                                detail="该行匹配常见密钥或令牌模式；如果是真实凭据，应立即轮换并迁移到环境变量或密钥管理系统。",
                                 path=rel,
                                 line=line_no,
                                 agent=self.name,
@@ -239,15 +239,15 @@ class RiskAnalystAgent(BaseAgent):
                         )
 
         observations = [
-            f"Scanned {scanned_text_files} text files for maintainability and security signals.",
-            f"Found {todo_count} TODO/FIXME/HACK markers.",
-            f"Found {secret_hits} possible secret exposures.",
+            f"已扫描 {scanned_text_files} 个文本文件中的可维护性和安全信号。",
+            f"发现 {todo_count} 个 TODO/FIXME/HACK 标记。",
+            f"发现 {secret_hits} 处疑似密钥暴露。",
         ]
         severity_counts = Counter(finding.severity for finding in findings)
 
         return AgentResult(
             agent=self.name,
-            summary=f"Identified {len(findings)} risk findings across the repository.",
+            summary=f"在仓库中识别到 {len(findings)} 条风险发现。",
             observations=observations,
             findings=findings,
             data={"severity_counts": dict(severity_counts), "todo_count": todo_count, "secret_hits": secret_hits},
@@ -287,8 +287,8 @@ class TestStrategistAgent(BaseAgent):
             findings.append(
                 Finding(
                     severity="MEDIUM",
-                    title="No tests detected",
-                    detail="Source files exist, but no obvious test files or test directories were found.",
+                    title="未检测到测试",
+                    detail="仓库存在源码文件，但没有发现明显的测试文件或测试目录。",
                     agent=self.name,
                 )
             )
@@ -296,21 +296,21 @@ class TestStrategistAgent(BaseAgent):
             findings.append(
                 Finding(
                     severity="LOW",
-                    title="No test command inferred",
-                    detail="No standard project metadata was found for inferring an automated test command.",
+                    title="未推断出测试命令",
+                    detail="未发现可用于推断自动化测试命令的标准项目元数据。",
                     agent=self.name,
                 )
             )
 
         observations = [
-            f"Detected {len(test_files)} likely test files.",
-            "Inferred test commands: " + (", ".join(commands) if commands else "none"),
-            f"Detected {len(source_like)} source-like files.",
+            f"检测到 {len(test_files)} 个疑似测试文件。",
+            "推断出的测试命令：" + (", ".join(commands) if commands else "无"),
+            f"检测到 {len(source_like)} 个疑似源码文件。",
         ]
 
         return AgentResult(
             agent=self.name,
-            summary=f"Built a test strategy from {len(test_files)} test files and {len(commands)} inferred commands.",
+            summary=f"基于 {len(test_files)} 个测试文件和 {len(commands)} 条推断命令生成测试策略。",
             observations=observations,
             findings=findings,
             data={"test_files": test_files[:50], "commands": commands, "source_like_file_count": len(source_like)},
@@ -328,27 +328,27 @@ class RoadmapAgent(BaseAgent):
 
         roadmap: list[str] = []
         if high:
-            roadmap.append("P0: Review and remove possible secrets, then rotate affected credentials.")
-        if any(finding.title == "No tests detected" for finding in previous_findings):
-            roadmap.append("P1: Add smoke tests for core workflows before major refactoring.")
-        if any(finding.title == "Missing README" for finding in previous_findings):
-            roadmap.append("P1: Add README with setup, test, and contribution instructions.")
+            roadmap.append("P0：检查并移除疑似密钥，随后轮换受影响的凭据。")
+        if any(finding.title == "未检测到测试" for finding in previous_findings):
+            roadmap.append("P1：在大规模重构前，为核心流程补充冒烟测试。")
+        if any(finding.title == "缺少 README" for finding in previous_findings):
+            roadmap.append("P1：补充 README，明确安装、测试和协作说明。")
         if medium:
-            roadmap.append("P2: Triage medium-risk maintenance issues and split oversized files where practical.")
+            roadmap.append("P2：梳理中风险维护问题，并在合适时拆分超大文件。")
         if low:
-            roadmap.append("P3: Convert TODO/FIXME markers into tracked issues or remove stale comments.")
+            roadmap.append("P3：将 TODO/FIXME 标记转成可跟踪任务，或删除过期注释。")
         if not roadmap:
-            roadmap.append("P2: Repository health looks stable; schedule periodic automated audits in CI.")
+            roadmap.append("P2：仓库健康状况较稳定，建议在 CI 中定期运行自动审计。")
 
         observations = [
-            f"Consumed {len(context.results)} previous Agent outputs.",
-            f"Prioritized {len(high)} high, {len(medium)} medium, and {len(low)} low severity findings.",
-            f"Generated {len(roadmap)} action items.",
+            f"已消费 {len(context.results)} 个前序智能体输出。",
+            f"已按优先级整理 {len(high)} 条高风险、{len(medium)} 条中风险、{len(low)} 条低风险发现。",
+            f"已生成 {len(roadmap)} 条行动项。",
         ]
 
         return AgentResult(
             agent=self.name,
-            summary="Synthesized previous Agent outputs into an actionable engineering roadmap.",
+            summary="已将前序智能体输出汇总为可执行的工程改进路线图。",
             observations=observations,
             data={"roadmap": roadmap},
         )
@@ -364,8 +364,8 @@ class LLMSummarizerAgent(BaseAgent):
         if not base_url or not api_key or not model:
             return AgentResult(
                 agent=self.name,
-                summary="Skipped LLM summary because AI_BASE_URL, AI_API_KEY, or AI_MODEL is not configured.",
-                observations=["Deterministic audit results remain available."],
+                summary="由于未配置 AI_BASE_URL、AI_API_KEY 或 AI_MODEL，已跳过大模型总结。",
+                observations=["确定性审计结果仍然完整可用。"],
             )
 
         prompt = build_llm_prompt(context)
@@ -375,7 +375,7 @@ class LLMSummarizerAgent(BaseAgent):
                 "messages": [
                     {
                         "role": "system",
-                        "content": "You are a senior engineering manager. Summarize repository audit results in concise Chinese.",
+                        "content": "你是一名资深工程管理者。请用简洁中文总结代码库审计结果。",
                     },
                     {"role": "user", "content": prompt},
                 ],
@@ -395,14 +395,14 @@ class LLMSummarizerAgent(BaseAgent):
         except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, KeyError) as exc:
             return AgentResult(
                 agent=self.name,
-                summary="LLM summary failed; deterministic audit completed successfully.",
-                observations=[f"Error: {exc}"],
+                summary="大模型总结失败；确定性审计已成功完成。",
+                observations=[f"错误：{exc}"],
             )
 
         content = payload["choices"][0]["message"]["content"].strip()
         return AgentResult(
             agent=self.name,
-            summary="Generated an executive summary with the configured OpenAI-compatible model.",
+            summary="已使用配置的兼容 OpenAI 接口模型生成管理者摘要。",
             observations=[content],
             data={"model": model},
         )

@@ -12,7 +12,7 @@ class Finding:
     detail: str
     path: str | None = None
     line: int | None = None
-    agent: str = "unknown"
+    agent: str = "未知"
 
     def sort_key(self) -> tuple[int, str]:
         severity_order = {"HIGH": 0, "MEDIUM": 1, "LOW": 2, "INFO": 3}
@@ -44,4 +44,3 @@ class AuditContext:
         for result in self.results:
             findings.extend(result.findings)
         return sorted(findings, key=lambda item: item.sort_key())
-

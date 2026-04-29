@@ -1,66 +1,66 @@
-# Agentic Repo Audit Report
+# 多智能体代码库审计报告
 
-- Repository: `examples/sample_project`
-- Generated: `2026-04-29T07:19:59+00:00`
-- Agents: `FileScoutAgent, RiskAnalystAgent, TestStrategistAgent, RoadmapAgent`
+- 仓库路径：`examples/sample_project`
+- 生成时间：`2026-04-29T07:24:15+00:00`
+- 参与智能体：`FileScoutAgent, RiskAnalystAgent, TestStrategistAgent, RoadmapAgent`
 
-## Repository Overview
+## 仓库概览
 
-- Files scanned: `1`
-- Language/config distribution:
+- 已扫描文件数：`1`
+- 语言和配置分布：
   - Python: `1`
 
-## Findings
+## 风险发现
 
-- **HIGH** Possible secret in source (`app.py`:1): A line matches a common secret/token pattern. Rotate it if real and move it to environment-backed config.
-- **MEDIUM** Missing README: Repository lacks README.md, which makes onboarding and agent handoff harder.
-- **MEDIUM** No tests detected: Source files exist, but no obvious test files or test directories were found.
-- **LOW** Deferred work marker (`app.py`:5): # TODO: clamp invalid rates before production use
-- **LOW** No test command inferred: No standard project metadata was found for inferring an automated test command.
+- **高风险** 源码中可能存在密钥 (`app.py`:1)：该行匹配常见密钥或令牌模式；如果是真实凭据，应立即轮换并迁移到环境变量或密钥管理系统。
+- **中风险** 未检测到测试：仓库存在源码文件，但没有发现明显的测试文件或测试目录。
+- **中风险** 缺少 README：仓库缺少 README.md，会增加新人接手和智能体交接的成本。
+- **低风险** 未推断出测试命令：未发现可用于推断自动化测试命令的标准项目元数据。
+- **低风险** 遗留待办标记 (`app.py`:5)：# TODO: 上线前需要限制非法折扣率
 
-## Test Strategy
+## 测试策略
 
-No standard test command could be inferred.
-Likely test files detected: `0`
+未推断出标准测试命令。
+检测到的疑似测试文件数：`0`
 
-## Action Roadmap
+## 行动路线图
 
-- P0: Review and remove possible secrets, then rotate affected credentials.
-- P1: Add smoke tests for core workflows before major refactoring.
-- P1: Add README with setup, test, and contribution instructions.
-- P2: Triage medium-risk maintenance issues and split oversized files where practical.
-- P3: Convert TODO/FIXME markers into tracked issues or remove stale comments.
+- P0：检查并移除疑似密钥，随后轮换受影响的凭据。
+- P1：在大规模重构前，为核心流程补充冒烟测试。
+- P1：补充 README，明确安装、测试和协作说明。
+- P2：梳理中风险维护问题，并在合适时拆分超大文件。
+- P3：将 TODO/FIXME 标记转成可跟踪任务，或删除过期注释。
 
-## Agent Trace
+## 智能体轨迹
 
 ### FileScoutAgent
 
-Mapped 1 files and 1 language/config categories.
+已映射 1 个文件和 1 类语言或配置。
 
-- Scanned 1 files under examples/sample_project.
-- Top languages: Python=1
-- Detected 0 key project/config files.
+- 已扫描 examples/sample_project 下的 1 个文件。
+- 主要语言和配置类型：Python=1
+- 识别到 0 个关键项目或配置文件。
 
 ### RiskAnalystAgent
 
-Identified 2 risk findings across the repository.
+在仓库中识别到 2 条风险发现。
 
-- Scanned 1 text files for maintainability and security signals.
-- Found 1 TODO/FIXME/HACK markers.
-- Found 1 possible secret exposures.
+- 已扫描 1 个文本文件中的可维护性和安全信号。
+- 发现 1 个 TODO/FIXME/HACK 标记。
+- 发现 1 处疑似密钥暴露。
 
 ### TestStrategistAgent
 
-Built a test strategy from 0 test files and 0 inferred commands.
+基于 0 个测试文件和 0 条推断命令生成测试策略。
 
-- Detected 0 likely test files.
-- Inferred test commands: none
-- Detected 1 source-like files.
+- 检测到 0 个疑似测试文件。
+- 推断出的测试命令：无
+- 检测到 1 个疑似源码文件。
 
 ### RoadmapAgent
 
-Synthesized previous Agent outputs into an actionable engineering roadmap.
+已将前序智能体输出汇总为可执行的工程改进路线图。
 
-- Consumed 3 previous Agent outputs.
-- Prioritized 1 high, 2 medium, and 2 low severity findings.
-- Generated 5 action items.
+- 已消费 3 个前序智能体输出。
+- 已按优先级整理 1 条高风险、2 条中风险、2 条低风险发现。
+- 已生成 5 条行动项。

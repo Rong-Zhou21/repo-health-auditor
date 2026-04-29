@@ -13,8 +13,8 @@ def test_auditor_detects_todo_and_missing_tests(tmp_path: Path) -> None:
     orchestrator.run()
 
     titles = [finding.title for finding in orchestrator.context.all_findings]
-    assert "Deferred work marker" in titles
-    assert "No tests detected" in titles
+    assert "遗留待办标记" in titles
+    assert "未检测到测试" in titles
 
 
 def test_report_contains_roadmap(tmp_path: Path) -> None:
@@ -24,7 +24,6 @@ def test_report_contains_roadmap(tmp_path: Path) -> None:
     orchestrator.run()
     report = orchestrator.markdown()
 
-    assert "# Agentic Repo Audit Report" in report
-    assert "## Action Roadmap" in report
+    assert "# 多智能体代码库审计报告" in report
+    assert "## 行动路线图" in report
     assert "FileScoutAgent" in report
-

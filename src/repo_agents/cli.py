@@ -6,23 +6,34 @@ from pathlib import Path
 from .orchestrator import AuditOrchestrator
 
 
+class ChineseArgumentParser(argparse.ArgumentParser):
+    def format_help(self) -> str:
+        help_text = super().format_help()
+        return (
+            help_text.replace("usage:", "用法：")
+            .replace("options:", "选项：")
+            .replace("show this help message and exit", "显示帮助信息并退出。")
+        )
+
+
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
-        description="Run a lightweight multi-agent audit over a local code repository.",
+    parser = ChineseArgumentParser(
+        prog="repo-auditor",
+        description="对本地代码库运行轻量多智能体审计。",
     )
-    parser.add_argument("--path", default=".", help="Repository path to audit. Defaults to current directory.")
-    parser.add_argument("--out", default="audit-report.md", help="Markdown report output path.")
-    parser.add_argument("--json", dest="json_out", default=None, help="Optional JSON report output path.")
+    parser.add_argument("--path", default=".", help="要审计的仓库路径，默认是当前目录。")
+    parser.add_argument("--out", default="audit-report.md", help="Markdown 报告输出路径。")
+    parser.add_argument("--json", dest="json_out", default=None, help="可选的 JSON 报告输出路径。")
     parser.add_argument(
         "--max-file-bytes",
         type=int,
         default=512_000,
-        help="Files larger than this are listed as large files and skipped for text scanning.",
+        help="大于该字节数的文件会被标记为超大文件，并跳过文本扫描。",
     )
     parser.add_argument(
         "--use-llm",
         action="store_true",
-        help="Enable optional OpenAI-compatible LLM summary via AI_BASE_URL, AI_API_KEY, and AI_MODEL.",
+        help="通过 AI_BASE_URL、AI_API_KEY 和 AI_MODEL 启用可选的大模型总结。",
     )
     return parser
 
@@ -45,12 +56,11 @@ def main(argv: list[str] | None = None) -> int:
         json_path.parent.mkdir(parents=True, exist_ok=True)
         json_path.write_text(orchestrator.json_payload(), encoding="utf-8")
 
-    print(f"Audit complete: {out_path}")
+    print(f"审计完成：{out_path}")
     if args.json_out:
-        print(f"JSON report: {args.json_out}")
+        print(f"JSON 报告：{args.json_out}")
     return 0
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
