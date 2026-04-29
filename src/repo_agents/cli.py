@@ -19,7 +19,7 @@ class ChineseArgumentParser(argparse.ArgumentParser):
 def build_parser() -> argparse.ArgumentParser:
     parser = ChineseArgumentParser(
         prog="repo-auditor",
-        description="对本地代码库运行轻量多智能体审计。",
+        description="对本地代码库运行轻量健康巡检。",
     )
     parser.add_argument("--path", default=".", help="要审计的仓库路径，默认是当前目录。")
     parser.add_argument("--out", default="audit-report.md", help="Markdown 报告输出路径。")
@@ -33,7 +33,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--use-llm",
         action="store_true",
-        help="通过 AI_BASE_URL、AI_API_KEY 和 AI_MODEL 启用可选的大模型总结。",
+        help="通过 LLM_BASE_URL、LLM_API_KEY 和 LLM_MODEL 启用可选的模型总结。",
     )
     return parser
 

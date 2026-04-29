@@ -141,7 +141,7 @@ class FileScoutAgent(BaseAgent):
                 Finding(
                     severity="MEDIUM",
                     title="缺少 README",
-                    detail="仓库缺少 README.md，会增加新人接手和智能体交接的成本。",
+                    detail="仓库缺少 README.md，会增加新人接手和维护交接的成本。",
                     agent=self.name,
                 )
             )
@@ -199,7 +199,7 @@ class RiskAnalystAgent(BaseAgent):
                     Finding(
                         severity="MEDIUM",
                         title="跳过超大文件",
-                        detail=f"文件大小为 {size} 字节，可能拖慢代码审查和智能体上下文加载。",
+                        detail=f"文件大小为 {size} 字节，可能拖慢代码审查和上下文加载。",
                         path=rel,
                         agent=self.name,
                     )
@@ -341,14 +341,14 @@ class RoadmapAgent(BaseAgent):
             roadmap.append("P2：仓库健康状况较稳定，建议在 CI 中定期运行自动审计。")
 
         observations = [
-            f"已消费 {len(context.results)} 个前序智能体输出。",
+            f"已消费 {len(context.results)} 个前序检查输出。",
             f"已按优先级整理 {len(high)} 条高风险、{len(medium)} 条中风险、{len(low)} 条低风险发现。",
             f"已生成 {len(roadmap)} 条行动项。",
         ]
 
         return AgentResult(
             agent=self.name,
-            summary="已将前序智能体输出汇总为可执行的工程改进路线图。",
+            summary="已将前序检查输出汇总为可执行的工程改进路线图。",
             observations=observations,
             data={"roadmap": roadmap},
         )
@@ -358,13 +358,13 @@ class LLMSummarizerAgent(BaseAgent):
     name = "LLMSummarizerAgent"
 
     def run(self, context: AuditContext) -> AgentResult:
-        base_url = os.getenv("AI_BASE_URL", "").rstrip("/")
-        api_key = os.getenv("AI_API_KEY", "")
-        model = os.getenv("AI_MODEL", "")
+        base_url = os.getenv("LLM_BASE_URL", "").rstrip("/")
+        api_key = os.getenv("LLM_API_KEY", "")
+        model = os.getenv("LLM_MODEL", "")
         if not base_url or not api_key or not model:
             return AgentResult(
                 agent=self.name,
-                summary="由于未配置 AI_BASE_URL、AI_API_KEY 或 AI_MODEL，已跳过大模型总结。",
+                summary="由于未配置 LLM_BASE_URL、LLM_API_KEY 或 LLM_MODEL，已跳过模型总结。",
                 observations=["确定性审计结果仍然完整可用。"],
             )
 

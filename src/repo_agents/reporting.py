@@ -8,11 +8,11 @@ from .models import AuditContext
 
 def render_markdown_report(context: AuditContext) -> str:
     lines: list[str] = []
-    lines.append("# 多智能体代码库审计报告")
+    lines.append("# 代码库健康巡检报告")
     lines.append("")
     lines.append(f"- 仓库路径：`{display_path(context.root)}`")
     lines.append(f"- 生成时间：`{datetime.now(timezone.utc).isoformat(timespec='seconds')}`")
-    lines.append(f"- 参与智能体：`{', '.join(result.agent for result in context.results)}`")
+    lines.append(f"- 参与模块：`{', '.join(result.agent for result in context.results)}`")
     lines.append("")
 
     file_result = next((result for result in context.results if result.agent == "FileScoutAgent"), None)
@@ -36,7 +36,7 @@ def render_markdown_report(context: AuditContext) -> str:
     lines.append("")
     findings = context.all_findings
     if not findings:
-        lines.append("确定性智能体未发现风险项。")
+        lines.append("未发现风险项。")
     else:
         for finding in findings:
             location = ""
@@ -78,7 +78,7 @@ def render_markdown_report(context: AuditContext) -> str:
         lines.append(llm_result.observations[0] if llm_result.observations else llm_result.summary)
         lines.append("")
 
-    lines.append("## 智能体轨迹")
+    lines.append("## 巡检轨迹")
     lines.append("")
     for result in context.results:
         lines.append(f"### {result.agent}")

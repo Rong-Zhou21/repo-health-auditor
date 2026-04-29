@@ -24,6 +24,6 @@ def test_report_contains_roadmap(tmp_path: Path) -> None:
     orchestrator.run()
     report = orchestrator.markdown()
 
-    assert "# 多智能体代码库审计报告" in report
+    assert "# 代码库健康巡检报告" in report
     assert "## 行动路线图" in report
     assert "FileScoutAgent" in report

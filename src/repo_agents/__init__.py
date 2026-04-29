@@ -1,4 +1,4 @@
-"""多智能体代码库审计器。"""
+"""代码库健康巡检器。"""
 
 from .orchestrator import AuditOrchestrator
 
